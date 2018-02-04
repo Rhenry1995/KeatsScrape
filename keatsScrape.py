@@ -12,9 +12,13 @@ def login(password, username):
     payload = {'username': username, 'password': password}
     url='https://keats.kcl.ac.uk/login/index.php'
     r = requests.post(url, data=payload)
-    #print(r.headers)
-    #print(r.headers['Access-Control-Allow-Origin'])
-    return r.text
+    try:
+        if r.headers['Access-Control-Allow-Origin'] == 'https://login-keats.kcl.ac.uk':
+            print('Login Successful')
+            return r
+    except:
+        print('Username or password is incorrect. Check and retry')
+
 
 def findData(htmlData):
     data = BS(htmlData, 'html.parser')
@@ -33,7 +37,7 @@ def main():
     username = args.username
 
     htmlData = login(password, username)
-    findData(htmlData)
+    #findData(htmlData)
 
 
 if __name__ == '__main__':
