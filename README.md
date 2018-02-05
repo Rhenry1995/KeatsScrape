@@ -9,4 +9,4 @@ Program is in python3. To download the required files using the following comman
 ## Input
 To run the program enter the following code with adding your username or password.
 
-`python3 KeatsScrape -pw yourPassword -un yourUsername`
+`python3 KeatsScrape -pw yourPassword -un yourUsername -wd directoryOfdestination`

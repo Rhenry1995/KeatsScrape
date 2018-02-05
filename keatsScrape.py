@@ -6,6 +6,7 @@ Date:4/2/2018
 import requests
 import argparse
 from bs4 import BeautifulSoup as BS
+import os
 
 def login(creditations,session):
     url='https://keats.kcl.ac.uk/login/index.php'
@@ -17,19 +18,20 @@ def login(creditations,session):
     except:
         print('Username or password is incorrect. Check and retry')
 
-
-
-
 def main():
     # Parser for arguments
     pr = argparse.ArgumentParser()
     pr.add_argument("-pw", "--password", help="Password for Kings")
     pr.add_argument("-un", "--username", help="Username for Kings")
+    pr.add_argument("-wd", "--workingDirectory", default=os.getcwd())
+
 
     args = pr.parse_args()
     password = args.password
     username = args.username
+    cwd = args.workingDirectory
     creditations = {'username': username, 'password': password}
+    print(cwd)
 
     # Set up session
     with requests.Session() as session:
