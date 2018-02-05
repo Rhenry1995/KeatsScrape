@@ -31,7 +31,6 @@ def main():
     username = args.username
     cwd = args.workingDirectory
     creditations = {'username': username, 'password': password}
-    print(cwd)
 
     # Set up session
     with requests.Session() as session:
