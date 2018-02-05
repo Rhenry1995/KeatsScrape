@@ -42,7 +42,12 @@ def main():
 
         course = int(input('Index of course\n>>>'))
         courseURL = courses[course].a.get('href')
-        print(courseURL)
+        courseData = session.get(courseURL)
+        courseHTML = BS(courseData.text, 'html.parser')
+        sections =courseHTML.find_all("li", class_= 'section')
+        for section in sections:
+            print(section.get('aria-label'))
 
+        # TODO: get it so it works in current directory
 if __name__ == '__main__':
     main()
