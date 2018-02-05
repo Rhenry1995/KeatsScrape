@@ -7,11 +7,9 @@ import requests
 import argparse
 from bs4 import BeautifulSoup as BS
 
-def login(password, username):
-
-    payload = {'username': username, 'password': password}
+def login(creditations,session):
     url='https://keats.kcl.ac.uk/login/index.php'
-    r = requests.post(url, data=payload)
+    r = session.post(url, data=creditations)
     try:
         if r.headers['Access-Control-Allow-Origin'] == 'https://login-keats.kcl.ac.uk':
             print('Login Successful')
@@ -19,10 +17,6 @@ def login(password, username):
     except:
         print('Username or password is incorrect. Check and retry')
 
-
-def findData(htmlData):
-    data = BS(htmlData, 'html.parser')
-    #print(data.prettify())
 
 
 
@@ -35,10 +29,20 @@ def main():
     args = pr.parse_args()
     password = args.password
     username = args.username
+    creditations = {'username': username, 'password': password}
 
-    htmlData = login(password, username)
-    #findData(htmlData)
+    # Set up session
+    with requests.Session() as session:
+        htmlData = login(creditations, session)
+        dashboardData = BS(htmlData.text, 'html.parser')
+        courses = dashboardData.find_all("h2", class_= 'title')
+        # Print courses with index
+        for i in range(0,len(courses)-1):
+            print('%d: %s'%(i, courses[i].a.get('title')))
 
+        course = int(input('Index of course\n>>>'))
+        courseURL = courses[course].a.get('href')
+        print(courseURL)
 
 if __name__ == '__main__':
     main()
