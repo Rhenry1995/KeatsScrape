@@ -42,13 +42,36 @@ def main():
             print('%d: %s'%(i, courses[i].a.get('title')))
 
         course = int(input('Index of course\n>>>'))
+        print('%s Selected' %courses[course].a.get('title'))
         courseURL = courses[course].a.get('href')
         courseData = session.get(courseURL)
         courseHTML = BS(courseData.text, 'html.parser')
         sections =courseHTML.find_all("li", class_= 'section')
         for section in sections:
-            print(section.get('aria-label'))
+            #Folder created
 
-        # TODO: get it so it works in current directory
+            pathway = cwd + '/' + section.get('aria-label')
+            if not os.path.exists(pathway):
+                os.makedirs(pathway)
+                print('Folder for %s has been created' % section.get('aria-label'))
+            else:
+                print('Folder exists')
+
+            files = section.find_all("li", class_='activity')
+            for filex in files:
+                fileName = filex.find('span').get_text()
+                fileID = filex.find('a')
+                if filex.find('img', src='https://keats.kcl.ac.uk/theme/image.php/keats/folder/1516692714/icon'):
+                    fileType = 'folder'
+                elif filex.find('img', src='https://keats.kcl.ac.uk/theme/image.php/keats/core/1516692714/f/pdf-24'):
+                    fileType = 'pdf'
+                else:
+                    fileType = 'none'
+
+                print(fileType)
+
+
+
+
 if __name__ == '__main__':
     main()
