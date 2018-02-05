@@ -48,12 +48,14 @@ def main():
         courseHTML = BS(courseData.text, 'html.parser')
         sections =courseHTML.find_all("li", class_= 'section')
         for section in sections:
-            #Folder created
+            # Skip over 'Not available'
+            if section.find('h3').get_text() === 'Not available':
+                continue
 
+            #Folder created
             pathway = cwd + '/' + section.get('aria-label')
             if not os.path.exists(pathway):
                 os.makedirs(pathway)
-                print('Folder for %s has been created' % section.get('aria-label'))
             else:
                 print('Folder exists')
 
@@ -61,14 +63,23 @@ def main():
             for filex in files:
                 fileName = filex.find('span').get_text()
                 fileID = filex.find('a')
+                # Folder
                 if filex.find('img', src='https://keats.kcl.ac.uk/theme/image.php/keats/folder/1516692714/icon'):
                     fileType = 'folder'
+                    print(fileType)
+                # PDF file
                 elif filex.find('img', src='https://keats.kcl.ac.uk/theme/image.php/keats/core/1516692714/f/pdf-24'):
                     fileType = 'pdf'
+                    '''
+                    if not os.path.exists(pathway+'/'+fileName +'.'+fileType):
+                        os.makedirs(pathway)
+                        print('Folder for %s has been created' % section.get('aria-label'))
+                    else:
+                        print('File exists')
+                    '''
                 else:
                     fileType = 'none'
-
-                print(fileType)
+                    print(fileType)
 
 
 
