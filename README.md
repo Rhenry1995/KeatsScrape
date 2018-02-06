@@ -7,6 +7,6 @@ Program is in python3. To download the required files using the following comman
 `pip3 install -r requirements.txt`
 
 ## Input
-To run the program enter the following code with adding your username or password.
+To run the program enter the following code with adding your username or password. The directory for the destination is optional. If not included it will use the current working directory.
 
-`python3 KeatsScrape -pw yourPassword -un yourUsername -wd directoryOfdestination`
+`python3 KeatsScrape -pw yourPassword -un yourUsername -wd directoryOfdestination(optional)`
