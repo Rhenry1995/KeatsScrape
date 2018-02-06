@@ -74,8 +74,10 @@ def main():
                     fileType = 'pdf'
                     filePathway = pathway+'/'+fileName +'.'+fileType
                     fileURL = filex.find('a').get('href') + '&redirect=1'
-                    fileData = session.get(fileURL)
+
+
                     if not os.path.exists(pathway+'/'+fileName +'.'+fileType):
+                        fileData = session.get(fileURL)
                         with open(filePathway, 'wb') as f:
                             f.write(fileData.content)
                         print('File created: %s' % fileName)
