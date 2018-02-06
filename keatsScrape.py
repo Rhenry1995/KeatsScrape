@@ -49,9 +49,11 @@ def main():
         sections =courseHTML.find_all("li", class_= 'section')
         for section in sections:
             # Skip over 'Not available'
-            if section.find('h3').get_text() === 'Not available':
-                continue
-
+            try:
+                if section.find('h3').get_text() == 'Not available':
+                    continue
+            except:
+                pass
             #Folder created
             pathway = cwd + '/' + section.get('aria-label')
             if not os.path.exists(pathway):
@@ -65,20 +67,24 @@ def main():
                 fileID = filex.find('a')
                 # Folder
                 if filex.find('img', src='https://keats.kcl.ac.uk/theme/image.php/keats/folder/1516692714/icon'):
-                    fileType = 'folder'
+                    fileType = 'folder - This is still to be supported'
                     print(fileType)
                 # PDF file
                 elif filex.find('img', src='https://keats.kcl.ac.uk/theme/image.php/keats/core/1516692714/f/pdf-24'):
                     fileType = 'pdf'
+                    filePathway = pathway+'/'+fileName +'.'+fileType
+                    fileURL = filex.find('a').get('href') + '&redirect=1'
+                    
                     '''
                     if not os.path.exists(pathway+'/'+fileName +'.'+fileType):
-                        os.makedirs(pathway)
+                        with open(filePathway, 'wb') as f:
+
                         print('Folder for %s has been created' % section.get('aria-label'))
                     else:
                         print('File exists')
                     '''
                 else:
-                    fileType = 'none'
+                    fileType = 'File to be supported'
                     print(fileType)
 
 
