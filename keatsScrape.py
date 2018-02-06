@@ -74,15 +74,14 @@ def main():
                     fileType = 'pdf'
                     filePathway = pathway+'/'+fileName +'.'+fileType
                     fileURL = filex.find('a').get('href') + '&redirect=1'
-                    
-                    '''
+                    fileData = session.get(fileURL)
                     if not os.path.exists(pathway+'/'+fileName +'.'+fileType):
                         with open(filePathway, 'wb') as f:
-
-                        print('Folder for %s has been created' % section.get('aria-label'))
+                            f.write(fileData.content)
+                        print('File created: %s' % fileName)
                     else:
                         print('File exists')
-                    '''
+
                 else:
                     fileType = 'File to be supported'
                     print(fileType)
