@@ -7,6 +7,7 @@ import requests
 import argparse
 from bs4 import BeautifulSoup as BS
 import os
+import re
 
 def login(creditations,session):
     url='https://keats.kcl.ac.uk/login/index.php'
@@ -58,19 +59,22 @@ def main():
             pathway = cwd + '/' + section.get('aria-label')
             if not os.path.exists(pathway):
                 os.makedirs(pathway)
+                print('Folder Created: ' + section.get('aria-label'))
             else:
                 print('Folder exists')
 
             files = section.find_all("li", class_='activity')
             for filex in files:
-                fileName = filex.find('span').get_text()
-                fileID = filex.find('a')
+                try:
+                    fileName = filex.find('span').get_text()
+                except AttributeError:
+                    fileID = filex.find('a')
                 # Folder
                 if filex.find('img', src='https://keats.kcl.ac.uk/theme/image.php/keats/folder/1516692714/icon'):
                     fileType = 'folder - This is still to be supported'
                     print(fileType)
                 # PDF file
-                elif filex.find('img', src='https://keats.kcl.ac.uk/theme/image.php/keats/core/1516692714/f/pdf-24'):
+                elif (filex.find('img', src=re.compile('pdf'))):
                     fileType = 'pdf'
                     filePathway = pathway+'/'+fileName +'.'+fileType
                     fileURL = filex.find('a').get('href') + '&redirect=1'
