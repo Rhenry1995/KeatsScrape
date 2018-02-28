@@ -19,6 +19,17 @@ def login(creditations,session):
     except:
         print('Username or password is incorrect. Check and retry')
 
+def dirMade(cwd, sectionName, subSection = None):
+    if subSection:
+        pathway = cwd + '/' + sectionName + '/' + subSection
+    else:
+        pathway = cwd + '/' + sectionName
+    if not os.path.exists(pathway):
+        os.makedirs(pathway)
+        print('Folder Created: ' + sectionName + '/' + subSection)
+    else:
+        print('Folder exists')
+
 def main():
     # Parser for arguments
     pr = argparse.ArgumentParser()
@@ -55,13 +66,10 @@ def main():
                     continue
             except:
                 pass
+
             #Folder created
+            dirMade(cwd, section.get('aria-label'))
             pathway = cwd + '/' + section.get('aria-label')
-            if not os.path.exists(pathway):
-                os.makedirs(pathway)
-                print('Folder Created: ' + section.get('aria-label'))
-            else:
-                print('Folder exists')
 
             files = section.find_all("li", class_='activity')
             for filex in files:
@@ -86,7 +94,7 @@ def main():
                 # Feedback link
                 elif (filex.find('img', src=re.compile('archive-24'))):
                     print("Zip file - still to be supported")
-                # PDF file
+                    # PDF file
                 elif (filex.find('img', src=re.compile('pdf'))):
                     fileType = 'pdf'
                     filePathway = pathway+'/'+fileName +'.'+fileType
@@ -98,9 +106,13 @@ def main():
                         print('File created: %s' % fileName)
                     else:
                         print('File exists')
+                elif filex.find('span', style="color: #000000;"):
+                    dirMade(cwd, section.get('aria-label'), fileName)
+                    pathway = cwd + '/' + section.get('aria-label') + "/" + fileName
 
                 else:
                     fileType = 'File to be supported'
+
                     print(fileType)
 
 
