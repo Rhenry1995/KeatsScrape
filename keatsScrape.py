@@ -17,7 +17,7 @@ def login(creditations,session):
     except:
         print('Username or password is incorrect. Check and retry')
 
-def dirMade(cwd, sectionName, subSection = None):
+def createDir(cwd, sectionName, subSection = None):
     if subSection:
         pathway = cwd + '/' + sectionName + '/' + subSection
     else:
@@ -27,6 +27,21 @@ def dirMade(cwd, sectionName, subSection = None):
         print('Folder Created: ' + sectionName + '/' + subSection)
     else:
         print('Folder exists')
+
+def createFile(s, fileName, pathway, fileURL, fileType=None):
+    if fileType:
+        filePathway = pathway+'/'+fileName +'.'+fileType
+    else:
+        filePathway = pathway+'/'+fileName
+
+    if not os.path.exists(filePathway):
+        fileData = s.get(fileURL)
+        with open(filePathway, 'wb') as f:
+            f.write(fileData.content)
+        print('File created: %s' % fileName)
+    else:
+        print('File exists')
+
 
 def main():
     # Parser for arguments
@@ -68,7 +83,7 @@ def main():
 
             #Folder created
             sectionName = section.get('aria-label')
-            dirMade(cwd, sectionName)
+            createDir(cwd, sectionName)
             pathway = cwd + '/' + sectionName
 
             files = section.find_all("li", class_='activity')
@@ -91,23 +106,23 @@ def main():
                 # Assignment
                 elif (filex.find('img', src=re.compile('assign'))):
                     print("Assignment Input")
-                # Feedback link
+                # Zip File
                 elif (filex.find('img', src=re.compile('archive-24'))):
                     print("Zip file - still to be supported")
-                    # PDF file
-                elif (filex.find('img', src=re.compile('pdf'))):
-                    fileType = 'pdf'
-                    filePathway = pathway+'/'+fileName +'.'+fileType
-                    fileURL = filex.find('a').get('href') + '&redirect=1'
-                    if not os.path.exists(pathway+'/'+fileName +'.'+fileType):
-                        fileData = session.get(fileURL)
-                        with open(filePathway, 'wb') as f:
-                            f.write(fileData.content)
-                        print('File created: %s' % fileName)
+                # Source Code
+                elif (filex.find('img', src=re.compile('sourcecode'))):
+                    if zp:
+                        fileURL = filex.find('a').get('href') + '&redirect=1'
+                        createFile(session, fileName, pathway, fileURL)
                     else:
-                        print('File exists')
+                        print('Source code')
+                # PDF file
+                elif (filex.find('img', src=re.compile('pdf'))):
+                    fileURL = filex.find('a').get('href') + '&redirect=1'
+                    createFile(session, fileName, pathway, fileURL, 'pdf')
+                # Subfolder
                 elif filex.find('span', style="color: #000000;"):
-                    dirMade(cwd, sectionName, fileName)
+                    createDir(cwd, sectionName, fileName)
                     pathway = cwd + '/' + sectionName + "/" + fileName
 
                 else:
