@@ -3,11 +3,9 @@ Author: Ross Henry
 Date:4/2/2018
 '''
 
-import requests
-import argparse
+import requests, argparse, os, re
 from bs4 import BeautifulSoup as BS
-import os
-import re
+
 
 def login(creditations,session):
     url='https://keats.kcl.ac.uk/login/index.php'
@@ -36,12 +34,13 @@ def main():
     pr.add_argument("-pw", "--password", help="Password for Kings")
     pr.add_argument("-un", "--username", help="Username for Kings")
     pr.add_argument("-wd", "--workingDirectory", default=os.getcwd())
-
+    pr.add_argument("-zp", "--zipfile", help="Zipfile", default=False)
 
     args = pr.parse_args()
     password = args.password
     username = args.username
     cwd = args.workingDirectory
+    zp = args.zipfile
     creditations = {'username': username, 'password': password}
 
     # Set up session
@@ -68,8 +67,9 @@ def main():
                 pass
 
             #Folder created
-            dirMade(cwd, section.get('aria-label'))
-            pathway = cwd + '/' + section.get('aria-label')
+            sectionName = section.get('aria-label')
+            dirMade(cwd, sectionName)
+            pathway = cwd + '/' + sectionName
 
             files = section.find_all("li", class_='activity')
             for filex in files:
@@ -107,15 +107,13 @@ def main():
                     else:
                         print('File exists')
                 elif filex.find('span', style="color: #000000;"):
-                    dirMade(cwd, section.get('aria-label'), fileName)
-                    pathway = cwd + '/' + section.get('aria-label') + "/" + fileName
+                    dirMade(cwd, sectionName, fileName)
+                    pathway = cwd + '/' + sectionName + "/" + fileName
 
                 else:
                     fileType = 'File to be supported'
 
                     print(fileType)
-
-
 
 
 if __name__ == '__main__':
