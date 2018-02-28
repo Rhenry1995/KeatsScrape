@@ -74,12 +74,18 @@ def main():
                 if filex.find('img', src=re.compile('folder')):
                     fileType = 'folder - This is still to be supported'
                     print(fileType)
+                # Feedback link
+                elif (filex.find('img', src=re.compile('feedback'))):
+                    print("Feedback link")
                 # URL link
                 elif (filex.find('img', src=re.compile('url'))):
                     print("URL link")
                 # Assignment
                 elif (filex.find('img', src=re.compile('assign'))):
                     print("Assignment Input")
+                # Feedback link
+                elif (filex.find('img', src=re.compile('archive-24'))):
+                    print("Zip file - still to be supported")
                 # PDF file
                 elif (filex.find('img', src=re.compile('pdf'))):
                     fileType = 'pdf'
