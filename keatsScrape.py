@@ -71,9 +71,15 @@ def main():
                     continue
                 fileID = filex.find('a')
                 # Folder
-                if filex.find('img', src='https://keats.kcl.ac.uk/theme/image.php/keats/folder/1516692714/icon'):
+                if filex.find('img', src=re.compile('folder')):
                     fileType = 'folder - This is still to be supported'
                     print(fileType)
+                # URL link
+                elif (filex.find('img', src=re.compile('url'))):
+                    print("URL link")
+                # Assignment
+                elif (filex.find('img', src=re.compile('assign'))):
+                    print("Assignment Input")
                 # PDF file
                 elif (filex.find('img', src=re.compile('pdf'))):
                     fileType = 'pdf'
