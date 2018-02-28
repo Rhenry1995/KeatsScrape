@@ -68,7 +68,8 @@ def main():
                 try:
                     fileName = filex.find('span').get_text()
                 except AttributeError:
-                    fileID = filex.find('a')
+                    continue
+                fileID = filex.find('a')
                 # Folder
                 if filex.find('img', src='https://keats.kcl.ac.uk/theme/image.php/keats/folder/1516692714/icon'):
                     fileType = 'folder - This is still to be supported'
