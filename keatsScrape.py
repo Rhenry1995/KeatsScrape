@@ -3,7 +3,7 @@ Author: Ross Henry
 Date:4/2/2018
 '''
 
-import requests, argparse, os, re
+import requests, argparse, os, re, io, zipfile
 from bs4 import BeautifulSoup as BS
 
 
@@ -43,19 +43,29 @@ def createFile(s, fileName, pathway, fileURL, fileType=None):
         print('File exists')
 
 
+def downloadZip(s, pathway, folderURL, fileName): # Error where the folder exists isnt working
+    folderPathway = pathway + "/" + fileName
+    if not os.path.exists(folderPathway):
+        r = s.get(folderURL)
+        z = zipfile.ZipFile(io.BytesIO(r.content))
+        z.extractall(pathway)
+        print("Folder created: %s" % fileName)
+    else:
+        print("Folder Exists")
+
 def main():
     # Parser for arguments
     pr = argparse.ArgumentParser()
     pr.add_argument("-pw", "--password", help="Password for Kings")
     pr.add_argument("-un", "--username", help="Username for Kings")
     pr.add_argument("-wd", "--workingDirectory", default=os.getcwd())
-    pr.add_argument("-zp", "--zipfile", help="Zipfile", default=False)
+    pr.add_argument("-zp", "--zipfolder", help="Zip folder", default=False)
 
     args = pr.parse_args()
     password = args.password
     username = args.username
     cwd = args.workingDirectory
-    zp = args.zipfile
+    zp = args.zipfolder
     creditations = {'username': username, 'password': password}
 
     # Set up session
@@ -85,7 +95,6 @@ def main():
             sectionName = section.get('aria-label')
             createDir(cwd, sectionName)
             pathway = cwd + '/' + sectionName
-
             files = section.find_all("li", class_='activity')
             for filex in files:
                 try:
@@ -95,11 +104,14 @@ def main():
                 fileID = filex.find('a')
                 # Folder
                 if filex.find('img', src=re.compile('folder')):
-                    fileType = 'folder - This is still to be supported'
+                    fileType = 'Folder - still to be supported'
                     print(fileType)
                 # Feedback link
                 elif (filex.find('img', src=re.compile('feedback'))):
                     print("Feedback link")
+                # URL link
+                elif (filex.find('img', src=re.compile('quiz'))):
+                    print("Quiz link")
                 # URL link
                 elif (filex.find('img', src=re.compile('url'))):
                     print("URL link")
@@ -108,7 +120,11 @@ def main():
                     print("Assignment Input")
                 # Zip File
                 elif (filex.find('img', src=re.compile('archive-24'))):
-                    print("Zip file - still to be supported")
+                    if zp:
+                        fileURL = filex.find('a').get('href') + '&redirect=1'
+                        downloadZip(session, pathway, fileURL, fileName)
+                    else:
+                        print("Zip file")
                 # Source Code
                 elif (filex.find('img', src=re.compile('sourcecode'))):
                     if zp:
