@@ -15,4 +15,4 @@ Including a `-zp` tag will allow the download of zip files and source code
 
 
 ## Note
-This branch as a ssl workaround currently in place, `verify=false`, for log in. this means that it should be used at own risk. Bug will be fixed when possible
+This branch as a ssl workaround currently in place, `verify=false`, for log in. This means that it should be used at own risk. Bug will be fixed when possible. 
