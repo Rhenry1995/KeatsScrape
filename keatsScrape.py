@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup as BS
 
 def login(creditations,session):
     url='https://keats.kcl.ac.uk/login/index.php'
-    r = session.post(url, data=creditations)
+    r = session.post(url, data=creditations, verify=False)
     try:
         if r.headers['Access-Control-Allow-Origin'] == 'https://login-keats.kcl.ac.uk':
             print('Login Successful')
